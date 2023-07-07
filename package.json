@@ -1,6 +1,6 @@
 {
   "name": "tetrapack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple and configurable notion API parser for react projects.",
   "main": "dist/index.js",
   "type": "module",

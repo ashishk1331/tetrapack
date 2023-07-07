@@ -34,8 +34,9 @@ export const CustomParagraphs = {
         <Parser blocks={paragraphs} getBlocks={tableBlocks}>
             {() => ({
                 blocks: {
-                    paragraph: (text) => (
+                    paragraph: (text, key) => (
                         <div
+                            key={key}
                             style={{
                                 margin: "10px",
                             }}

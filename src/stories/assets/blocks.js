@@ -2,7 +2,7 @@ import { blocks } from "./pageBlocks.js";
 
 export const wholePage = blocks
 
-export const paragraphs = blocks.filter((i) => i.type === "paragraph").slice(0, 10);
+export const paragraphs = blocks.filter((i) => i.type === "paragraph");
 
 export const headings = blocks.filter((i) => i.type === "heading_1" || i.type === "heading_2" || i.type === "heading_3" )
 

@@ -1,5 +1,6 @@
 
-export var tableBlocks = function () {
+export var tableBlocks = function (tableID) {
+	console.log(tableID)
 	return new Promise((res, _) => {
 		setTimeout(() => {
 			res(blocks);

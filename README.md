@@ -1,13 +1,15 @@
-![Banner Image](./images/banner.png)
+# THIS PACKAGE IS UNDER-DEVELOPMENT AND MAY PRODUCE UNEXPECTED RESULTS.
 
-# THIS PACKAGE IN UNDER-DEVELOPMENT AND MAY PRODUCE UNEXPECTED RESULTS.
+![Banner Image](/images/bannerTwo.png)
 
 # Tetra Pack
 A simple and configurable notion API parser for react projects.
 
 ## Features -
-- Configurable blocks
-- Robust Parser
+- Robust and granular Parser
+- Keyed Approach
+- Configurable blocks and annotations
+- Loose Type Checking
 
 ## Installation -
 To install the package run the following command.
