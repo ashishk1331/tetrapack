@@ -89,3 +89,22 @@ export const Codes = {
 export const Tables = {
     render: () => <Parser blocks={tables} getBlocks={tableBlocks} />,
 };
+
+export const RawTables = {
+    render: () => (
+        <Parser blocks={tables} getBlocks={tableBlocks}>
+            {() => ({
+                blocks: {
+                    raw_table_row: (cols, key) => (
+                        <li key={key}>
+                            <h1>{cols[0]}</h1>
+                            <p>{cols[1]}</p>
+                            <em>{cols[2]}</em>
+                        </li>
+                    ),
+                    raw_table_wrapper: (items, key) => <ul key={key}>{items}</ul>
+                },
+            })}
+        </Parser>
+    ),
+};

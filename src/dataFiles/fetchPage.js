@@ -4,6 +4,18 @@ import "dotenv/config";
 
 let pageId = process.env.NOTION_DATABASE;
 
+export async function usePreParser(blocks, getBlocks) {
+	let res = [];
+	for (let block of blocks) {
+		if (block.has_children) {
+			block.children = await getBlocks(block.id);
+			usePreParser(block.children, getBlocks);
+		}
+		res.push(block);
+	}
+	return res;
+}
+
 async function getPageData(pageId) {
 	const notion = new Client({
 		auth: process.env.NOTION_TOKEN,
@@ -39,10 +51,7 @@ async function getBlocks(pageId) {
 }
 
 (async function () {
-	// let resp = await getPageData(pageId);
-	// await fs.writeFile("./src/dataFiles/pageData.json", JSON.stringify(resp, null, 4))
-
-	// resp = await getBlocks(pageId);
-	let resp = await getBlocks("7815587f-5b2c-4475-85db-1f3957134df3");
-	await fs.writeFile("./src/dataFiles/pageBlocks.json", JSON.stringify(resp, null, 4))
+	let blocks = await getBlocks(process.env.NOTION_DATABASE);
+	blocks = await usePreParser(blocks, getBlocks);
+	await fs.writeFile("./src/dataFiles/pageBlocks.json", JSON.stringify(blocks, null, 4))
 })();

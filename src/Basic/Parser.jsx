@@ -2,6 +2,7 @@ import * as React from "react";
 import PropTypes from "prop-types";
 import { formatText } from "./formatText.jsx";
 import { config } from "./config.jsx";
+import { complexParser } from "../Complex/complexParser.jsx";
 
 export function Parser(props) {
 	let _config = config();
@@ -51,10 +52,7 @@ export function Parser(props) {
 		}
 	}
 
-	let list = {
-		type: null,
-		blocks: [],
-	};
+	let list = [];
 	let list_types = new Set(["bulleted_list_item", "numbered_list_item"]);
 	let article = [];
 
@@ -62,35 +60,37 @@ export function Parser(props) {
 		let block = props.blocks[i];
 
 		if (list_types.has(block.type)) {
-			if (list.type && list.type + "_item" !== block.type) {
-				article.push(parse(_config, list, props.getBlocks));
-				list = {
-					type: null,
-					blocks: [],
-				};
+			if (list.length > 0 && list[0].type !== block.type) {
+				article.push(
+					parse(_config, {
+						type: list[0].type,
+						blocks: list,
+					})
+				);
+				list = [];
 			}
-			let type = block.type;
-			type = type.substring(0, type.lastIndexOf("_"));
-			list.type = type;
-			list.blocks.push(block);
-		} else {
-			if (list.type) {
-				article.push(parse(_config, list, props.getBlocks));
-				list = {
-					type: null,
-					blocks: [],
-				};
-			}
-			article.push(parse(_config, block, props.getBlocks));
+			list.push(block);
+			continue;
+		} else if (list.length > 0) {
+			article.push(
+				parse(_config, {
+					type: list[0].type,
+					blocks: list,
+				})
+			);
+			list = [];
 		}
+
+		article.push(parse(_config, block));
 	}
 
-	if (list.type) {
-		article.push(parse(_config, list, props.getBlocks));
-		list = {
-			type: null,
-			blocks: [],
-		};
+	if (list.length > 0) {
+		article.push(
+			parse(_config, {
+				type: list[0].type,
+				blocks: list,
+			})
+		);
 	}
 
 	return _config.wrapper(article);
@@ -98,16 +98,16 @@ export function Parser(props) {
 
 Parser.propTypes = {
 	blocks: PropTypes.arrayOf(PropTypes.object).isRequired,
-	getBlocks: PropTypes.func,
 };
 
-function parse(config, block, getBlocks) {
+function parse(config, block) {
 	let text = [];
 	let textBasedBlocks = new Set([
 		"divider",
 		"image",
-		"bulleted_list",
-		"numbered_list",
+		"bulleted_list_item",
+		"numbered_list_item",
+		"table",
 	]);
 	let restBlocks = new Set([
 		"heading_1",
@@ -133,17 +133,33 @@ function parse(config, block, getBlocks) {
 	}
 
 	switch (block.type) {
+		case "table":
+			return complexParser(block, formatText, config);
 
-		case "numbered_list":
-		case "bulleted_list":
-			let listItems = block.blocks.map((item) =>
-				config.blocks.list_item(
-					item[item.type].rich_text.map((richText, index) =>
-						formatText(richText, config, index + "_" + item.type)
-					),
+		case "numbered_list_item":
+		case "bulleted_list_item":
+			let listItems = block.blocks.map((item) => {
+				let nested_list = null;
+				if (item.has_children && item.children) {
+					nested_list = parse(config, {
+						type: item.children[0].type,
+						blocks: item.children,
+					});
+				}
+				return config.blocks.list_item(
+					[
+						item[item.type].rich_text.map((richText, index) =>
+							formatText(
+								richText,
+								config,
+								index + "_" + item.type
+							)
+						),
+						nested_list,
+					],
 					item.id
-				)
-			);
+				);
+			});
 
 			let compositeId = "";
 			for (let i of block.blocks) {
@@ -153,7 +169,9 @@ function parse(config, block, getBlocks) {
 				compositeId += i.id;
 			}
 
-			return config.blocks[block.type](listItems, compositeId);
+			return config.blocks[
+				block.type.substring(0, block.type.lastIndexOf("_"))
+			](listItems, compositeId);
 
 		case "divider":
 			return config.blocks[block.type](block.id);
@@ -196,5 +214,4 @@ function parse(config, block, getBlocks) {
 parse.propTypes = {
 	config: PropTypes.object.isRequired,
 	block: PropTypes.object.isRequired,
-	getBlocks: PropTypes.func.isRequired,
 };

@@ -1,6 +1,4 @@
-# THIS PACKAGE IS UNDER-DEVELOPMENT AND MAY PRODUCE UNEXPECTED RESULTS.
-
-![Banner Image](/images/bannerTwo.png)
+![Banner Image](/images/banner.png)
 
 # Tetra Pack
 A simple and configurable notion API parser for react projects.

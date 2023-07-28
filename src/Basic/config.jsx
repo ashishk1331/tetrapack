@@ -14,11 +14,7 @@ export const config = function () {
 				</figure>
 			),
 			list_item: (text, key) => <li key={key}>{text}</li>,
-			bulleted_list: (text, key) => (
-				<ul data-key={key} key={key}>
-					{text}
-				</ul>
-			),
+			bulleted_list: (text, key) => <ul key={key}>{text}</ul>,
 			numbered_list: (text, key) => <ol key={key}>{text}</ol>,
 			quote: (text, key) => (
 				<blockquote key={key}>
@@ -61,6 +57,8 @@ export const config = function () {
 			table_header_cell: (text, key) => <th key={key}>{text}</th>,
 			table_head: (text, key) => <thead key={key}>{text}</thead>,
 			table_body: (text, key) => <tbody key={key}>{text}</tbody>,
+			raw_table_row: null,
+			raw_table_wrapper: null,
 		},
 		annotations: {
 			bold: (text, key) => <strong key={key}>{text}</strong>,
@@ -73,33 +71,36 @@ export const config = function () {
 					{text}
 				</a>
 			),
+			mark: (text, style, key) => (
+				<mark style={style} key={key}>
+					{text}
+				</mark>
+			),
+			color: {
+				default: "",
+				blue: "blue",
+				brown: "brown",
+				gray: "gray",
+				green: "green",
+				orange: "orange",
+				pink: "pink",
+				purple: "purple",
+				red: "red",
+				yellow: "yellow",
+			},
+			background: {
+				default: "",
+				blue: "blue",
+				brown: "brown",
+				gray: "gray",
+				green: "green",
+				orange: "orange",
+				pink: "pink",
+				purple: "purple",
+				red: "red",
+				yellow: "yellow",
+			},
 		},
 		wrapper: (text) => text,
 	};
-};
-
-const annotationsConfig = function () {
-	return {
-		isBold: false,
-		isItalic: false,
-		isStriked: false,
-		isUnderline: false,
-		isCode: false,
-	};
-};
-
-const tableConfig = {
-	// table related tags
-	// <table />
-	table: (text, key) => <table key={key}>{text}</table>,
-	// <td />
-	table_cell: (text, key) => <td key={key}>{text}</td>,
-	// <tr />
-	table_row: (text, key) => <tr key={key}>{text}</tr>,
-	// <th />
-	table_header_cell: (text, key) => <th key={key}>{text}</th>,
-	// <thead />
-	table_head: (text, key) => <thead key={key}>{text}</thead>,
-	// <tbody />
-	table_body: (text, key) => <tbody key={key}>{text}</tbody>,
 };

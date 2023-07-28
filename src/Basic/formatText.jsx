@@ -1,7 +1,26 @@
 import * as React from "react";
 
 export function formatText(richText, config, key) {
-	let { strikethrough, underline, bold, italic, code } = richText.annotations;
+	let { strikethrough, underline, bold, italic, code, color } =
+		richText.annotations;
+
+	let style = null;
+	if (color && color !== "default") {
+		if (color.endsWith("background")) {
+			style = {
+				backgroundColor:
+					config.annotations.background[
+						color.substring(0, color.indexOf("_"))
+					],
+			};
+		} else {
+			style = {
+				color: config.annotations.color[color],
+				backgroundColor: "transparent",
+			};
+		}
+	}
+
 	let { href } = richText;
 	let text = richText.plain_text;
 
@@ -22,6 +41,9 @@ export function formatText(richText, config, key) {
 	}
 	if (href) {
 		text = config.annotations.link(text, href, key + "_href");
+	}
+	if (style) {
+		text = config.annotations.mark(text, style, key + "_mark");
 	}
 	return text;
 }
