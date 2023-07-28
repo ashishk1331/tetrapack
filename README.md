@@ -1,7 +1,7 @@
 ![Banner Image](/images/banner.png)
 
 # Tetra Pack
-A simple and configurable notion API parser for react projects.
+A fast and semantic Notion API data renderer for react projects.
 
 ## Features -
 - Robust and granular Parser
